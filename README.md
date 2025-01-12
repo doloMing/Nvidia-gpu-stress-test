@@ -78,7 +78,7 @@ Tests GPU's computational capabilities through matrix operations, primarily focu
 
 #### Implementation Details
 ```python
-def matrix_gpu_stress_test(duration: int, target_percent: float, gpu_index: int, log_file: str = None) -> dict:
+def matrix_stress(duration: int, target_percent: float, gpu_index: int = 0, log_file: str = None) -> Dict[int, dict]:
     """
     Parameters:
     - duration: Test duration in seconds
@@ -130,7 +130,7 @@ Provides basic GPU stress testing through simple compute operations, ideal for i
 
 #### Implementation Details
 ```python
-def simple_gpu_stress(stop_flag: list, target_percent: float, gpu_index: int, duration: int) -> dict:
+def simple_stress(stop_flag: list, target_percent: float, gpu_index: int, duration: int) -> dict:
     """
     Parameters:
     - stop_flag: List containing stop condition
