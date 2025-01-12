@@ -1,8 +1,8 @@
-# GPU Stress Test Modes Documentation
+# Multi-mode GPU Stress Test Documentation
 
 ## Overview about this code
 
-This documentation details four GPU stress test modes implemented in the code: Matrix Mode, Simple Mode, Ray Tracing Mode, and Frequency Max Mode. Each mode is designed to stress different aspects of GPU performance and capabilities. In general, these modes provide comprehensive testing capabilities for various aspects of GPU performance. By understanding the load distribution and implementation details, users can effectively utilize these tests to evaluate and optimize their GPU hardware.
+This documentation details four GPU stress test modes implemented in the code: Matrix Mode, Simple Mode, Ray Tracing Mode, and Frequency Max Mode. Each mode is designed to stress different aspects of GPU performance and capabilities. In general, these modes provide comprehensive testing capabilities for various aspects of GPU performance. By selecting the appropriate mode based on the specific capabilities you wish to test, you can gain valuable insights into your GPU's performance characteristics. Whether you're interested in computational throughput, rendering performance, or thermal management, these modes provide targeted testing to meet your needs.
 
 ## Main Function Parameters
 
@@ -269,3 +269,54 @@ python gpu_stress_test.py -m frequency-max -d 60
 python gpu_stress_test.py -m frequency-max -d 120 -o ./logs
 ```
 
+## Mode Suitability for GPU Capability Testing
+
+Each stress test mode is designed to evaluate specific aspects of GPU performance. Understanding which mode to use for different testing scenarios can help in effectively assessing GPU capabilities.
+
+### 1. Matrix Mode
+
+#### Suitable for Testing:
+- **Computational Throughput**: Evaluates the raw processing power of the GPU by performing intensive matrix operations.
+- **Memory Bandwidth**: Tests the ability of the GPU to handle large data transfers between memory and compute units.
+- **Cache Efficiency**: Assesses how well the GPU utilizes its cache hierarchy during compute-heavy tasks.
+
+#### Ideal Use Cases:
+- Benchmarking GPU performance in scientific computing applications.
+- Evaluating the efficiency of memory access patterns.
+- Testing the impact of different memory configurations on performance.
+
+### 2. Simple Mode
+
+#### Suitable for Testing:
+- **Basic Compute Stability**: Provides a straightforward way to test the stability of the GPU under load.
+- **Thermal Management**: Monitors how the GPU handles heat generation during sustained compute tasks.
+- **Power Consumption**: Evaluates the power efficiency of the GPU during basic operations.
+
+#### Ideal Use Cases:
+- Initial stability testing for new hardware setups.
+- Thermal profiling to ensure adequate cooling solutions.
+- Power draw analysis for energy efficiency studies.
+
+### 3. Ray Tracing Mode
+
+#### Suitable for Testing:
+- **Rendering Performance**: Simulates real-world rendering workloads to test the GPU's ability to handle complex graphics tasks.
+- **Memory Latency**: Evaluates the impact of random memory access patterns typical in ray tracing applications.
+- **Compute and Memory Balance**: Tests the GPU's ability to balance compute and memory operations efficiently.
+
+#### Ideal Use Cases:
+- Benchmarking performance in graphics-intensive applications like gaming and 3D rendering.
+- Testing the impact of different memory configurations on rendering performance.
+- Evaluating the effectiveness of GPU architectures in handling ray tracing workloads.
+
+### 4. Frequency Max Mode
+
+#### Suitable for Testing:
+- **Clock Stability**: Tests the GPU's ability to maintain high clock speeds under load without throttling.
+- **Thermal Throttling**: Evaluates the GPU's thermal management capabilities and its impact on performance.
+- **Power Delivery**: Assesses the power supply's ability to support the GPU at maximum frequency.
+
+#### Ideal Use Cases:
+- Stress testing for overclocking scenarios to ensure stability at higher frequencies.
+- Thermal solution evaluation to prevent throttling during high-performance tasks.
+- Power supply testing to ensure adequate delivery under peak load conditions.
