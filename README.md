@@ -4,6 +4,65 @@
 
 This documentation details four GPU stress test modes implemented in the code: Matrix Mode, Simple Mode, Ray Tracing Mode, and Frequency Max Mode. Each mode is designed to stress different aspects of GPU performance and capabilities. In general, these modes provide comprehensive testing capabilities for various aspects of GPU performance. By understanding the load distribution and implementation details, users can effectively utilize these tests to evaluate and optimize their GPU hardware.
 
+## Main Function Parameters
+
+The `main` function in the GPU stress test tool is designed to handle command-line arguments that configure the test's behavior. Understanding these parameters is crucial for effectively using the tool.
+
+### Command-Line Arguments
+
+#### 1. `-d`, `--duration`
+- **Description**: Specifies the duration of the stress test in seconds.
+- **Default Value**: 60 seconds
+- **Usage**: Determines how long the test will run. Longer durations provide more comprehensive data but require more time.
+- **Example**: `-d 120` runs the test for 120 seconds.
+
+#### 2. `-t`, `--target`
+- **Description**: Sets the target GPU usage percentage.
+- **Default Value**: 50%
+- **Usage**: Adjusts the load applied to the GPU. Useful for testing different levels of stress.
+- **Example**: `-t 80` targets 80% GPU utilization.
+
+#### 3. `-p`, `--parallel`
+- **Description**: Enables parallel mode, allowing tests to run on multiple GPUs simultaneously.
+- **Usage**: Useful for systems with multiple GPUs, enabling concurrent testing.
+- **Example**: `-p` runs tests in parallel mode.
+
+#### 4. `-g`, `--gpus`
+- **Description**: Specifies a comma-separated list of GPU indices to test.
+- **Usage**: Allows selection of specific GPUs for testing, useful in multi-GPU systems.
+- **Example**: `-g 0,1` tests GPUs with indices 0 and 1.
+
+#### 5. `-l`, `--loads`
+- **Description**: Provides a comma-separated list of target loads for each GPU.
+- **Usage**: Sets different target loads for each specified GPU, allowing customized stress levels.
+- **Example**: `-l 60,70` sets 60% load for the first GPU and 70% for the second.
+
+#### 6. `-o`, `--output`
+- **Description**: Specifies the path to save the log file.
+- **Default Value**: None (logs are not saved by default)
+- **Usage**: Enables logging of test results to a file for later analysis.
+- **Example**: `-o ./logs` saves logs to the `logs` directory.
+
+#### 7. `-m`, `--mode`
+- **Description**: Selects the test mode to run.
+- **Choices**: `matrix`, `simple`, `ray`, `frequency-max`
+- **Default Value**: `frequency-max`
+- **Usage**: Determines the type of stress test to perform, each focusing on different GPU aspects.
+- **Example**: `-m ray` runs the ray tracing stress test.
+
+### Example Usage
+
+```bash
+# Run a matrix mode test for 90 seconds targeting 75% GPU usage on GPU 0
+python gpu_stress_test.py -m matrix -d 90 -t 75 -g 0
+
+# Run a parallel simple mode test on GPUs 0 and 1 with different loads
+python gpu_stress_test.py -m simple -p -g 0,1 -l 50,70
+
+# Run a frequency max test for 120 seconds and save the output to a log file
+python gpu_stress_test.py -m frequency-max -d 120 -o ./logs
+```
+
 ## Test Modes in Detail
 
 ### 1. Matrix Mode (matrix_gpu_stress_test)
