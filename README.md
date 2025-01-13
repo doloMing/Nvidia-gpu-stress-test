@@ -1,8 +1,11 @@
-# Multi-mode GPU Stress Test Documentation
+# GPU/CPU Stress Test Documentation
 
 ## Overview about this code
 
-This documentation details four GPU stress test modes implemented in the code: Matrix Mode, Simple Mode, Ray Tracing Mode, and Frequency Max Mode. Each mode is designed to stress different aspects of GPU performance and capabilities. In general, these modes provide comprehensive testing capabilities for various aspects of GPU performance. By selecting the appropriate mode based on the specific capabilities you wish to test, you can gain valuable insights into your GPU's performance characteristics. Whether you're interested in computational throughput, rendering performance, or thermal management, these modes provide targeted testing to meet your needs.
+- nvidia_gpu_stress_test.py contains four GPU stress test modes: Matrix Mode, Simple Mode, Ray Tracing Mode, and Frequency Max Mode. Each mode is designed to stress different aspects of GPU performance and capabilities. In general, these modes provide comprehensive testing capabilities for various aspects of GPU performance. By selecting the appropriate mode based on the specific capabilities you wish to test, you can gain valuable insights into your GPU's performance characteristics. Whether you're interested in computational throughput, rendering performance, or thermal management, these modes provide targeted testing to meet your needs.
+- intel_cpu_stress_test.py is a Python-based utility designed for stress testing Intel CPUs. It provides precise control over CPU utilization, supports multi-core testing, and offers detailed performance monitoring capabilities.
+
+# Multi-mode Nvidia GPU Stress Test
 
 ## Main Function Parameters
 
@@ -320,3 +323,142 @@ Each stress test mode is designed to evaluate specific aspects of GPU performanc
 - Stress testing for overclocking scenarios to ensure stability at higher frequencies.
 - Thermal solution evaluation to prevent throttling during high-performance tasks.
 - Power supply testing to ensure adequate delivery under peak load conditions.
+
+# Intel CPU Stress Test
+
+## Features
+- Controllable CPU utilization (1-100%)
+- Multi-core support with individual core selection
+- Hyperthreading control
+- Real-time performance monitoring
+- Detailed test logging
+- Progress visualization
+- Configurable test duration
+- Support for both physical and logical cores
+
+## Requirements
+- Python 3.6 or higher
+- Required Python packages:
+  - psutil
+  - multiprocessing
+  - argparse
+
+## Usage
+### Basic Command
+```bash
+python intel_cpu_stress_test.py [-h] [-d DURATION] [-t TARGET] [-c CORES [CORES ...]] 
+                               [--disable-ht] [-o [OUTPUT]]
+```
+
+### Command Line Arguments
+- `-h, --help`: Show help message
+- `-d, --duration`: Test duration in seconds (default: 60)
+- `-t, --target`: Target CPU usage percentage (default: 95)
+- `-c, --cores`: Specific CPU cores to use (e.g., -c 0 2 4 6)
+- `--disable-ht`: Disable hyperthreading (use only physical cores)
+- `-o, --output`: Path to save the log file
+
+### Example Commands
+```bash
+# Basic test with default settings
+python intel_cpu_stress_test.py
+
+# Test with custom duration and target load
+python intel_cpu_stress_test.py -d 120 -t 80
+
+# Test specific CPU cores
+python intel_cpu_stress_test.py -c 0 2 4
+
+# Test with hyperthreading disabled
+python intel_cpu_stress_test.py --disable-ht
+
+# Test with output logging
+python intel_cpu_stress_test.py -o test_results.txt
+```
+
+## Test Modes and Scenarios
+
+### 1. Full Load Test
+Tests CPU at maximum capacity:
+```bash
+python intel_cpu_stress_test.py -t 100 -d 300
+```
+Use Case: Stability testing, thermal performance evaluation
+
+### 2. Selective Core Test
+Tests specific CPU cores:
+```bash
+python intel_cpu_stress_test.py -c 0 2 4 6 -t 90
+```
+Use Case: Core-specific performance analysis, thermal distribution testing
+
+### 3. Physical Cores Only
+Tests without hyperthreading:
+```bash
+python intel_cpu_stress_test.py --disable-ht -t 80
+```
+Use Case: Base CPU performance testing, SMT impact analysis
+
+### 4. Endurance Test
+Long-duration testing:
+```bash
+python intel_cpu_stress_test.py -d 3600 -t 70
+```
+Use Case: Stability verification, thermal throttling analysis
+
+## Output and Monitoring
+
+### Real-time Display
+During the test, the following information is displayed in real-time:
+- Progress bar showing current CPU utilization
+- Current overall CPU usage
+- Target CPU usage
+- Per-core utilization
+- Remaining test time
+
+Example output:
+```
+[==========-----] | Current: 50.5% | Target: 50.0% | Core 0: 49.8% | Core 1: 51.2% | Time: 45s
+```
+
+### Test Results
+After completion, the tool displays:
+- Average CPU usage during the test
+- Per-core average utilization statistics
+- Test duration and configuration details
+
+Example results:
+```
+Average CPU Usage during test: 94.8%
+
+Per-core average statistics during test:
+Core 0: 95.2%
+Core 1: 94.7%
+Core 2: 94.9%
+Core 3: 94.5%
+
+CPU stress test has been completed.
+```
+
+## Advanced Usage Scenarios
+
+### 1. Multi-Phase Testing
+```bash
+# Phase 1: All cores, high load
+python intel_cpu_stress_test.py -d 300 -t 90 -o phase1.txt
+
+# Phase 2: Physical cores only
+python intel_cpu_stress_test.py -d 300 -t 60 --disable-ht -o phase2.txt
+
+# Phase 3: Specific cores
+python intel_cpu_stress_test.py -d 300 -t 75 -c 0 2 4 -o phase3.txt
+```
+
+### 2. Performance Profiling
+```bash
+# Single core maximum performance
+python intel_cpu_stress_test.py -c 0 -t 100 -o single_core.txt
+
+# Dual-core balanced test
+python intel_cpu_stress_test.py -c 0 1 -t 50 -d 300 -o dual_core.txt
+```
