@@ -529,26 +529,7 @@ python amd_cpu_stress_test.py -t 100 -d 300
 python amd_cpu_stress_test.py --disable-smt -t 100 -d 300
 ```
 
-## AMD-Specific Considerations
-
-### 1. CCX Architecture
-- Cores within same CCX share L3 cache
-- Cross-CCX communication has different latency characteristics
-- Consider CCX boundaries when selecting cores for testing
-
-### 2. Precision Boost Behavior
-- Different boost algorithm compared to Intel
-- Temperature and power limits affect boost behavior differently
-- Consider monitoring tools like `ryzen_monitor` for detailed boost analysis
-
-### 3. Power Management
-- Different power states compared to Intel
-- Package power tracking differs from Intel's implementation
-- Consider using `ryzen_smu` for detailed power monitoring
-
-## Best Practices for AMD Testing
-
-### 1. CCX-Aware Core Selection
+### 4. CCX-Aware Core Selection
 ```bash
 # For Ryzen CPUs with 2 CCXs (example)
 # Test first CCX
@@ -561,12 +542,12 @@ python amd_cpu_stress_test.py -c 4 5 6 7 -o ccx2_test.txt
 python amd_cpu_stress_test.py -c 0 4 -o cross_ccx_test.txt
 ```
 
-### 2. Thermal Considerations
+### 5. Thermal Considerations
 - AMD CPUs often have different thermal characteristics
 - Consider chiplet design in newer AMD processors
 - Monitor per-CCX temperatures when available
 
-### 3. Performance Monitoring
+### 6. Performance Monitoring
 ```bash
 # Gradual load increase for boost behavior analysis
 for load in 30 50 70 90 100; do
@@ -574,9 +555,7 @@ for load in 30 50 70 90 100; do
 done
 ```
 
-## Advanced Test Examples
-
-### 1. CCX Performance Analysis
+### 7. CCX Performance Analysis
 ```bash
 #!/bin/bash
 # Test inter-CCX and intra-CCX performance
@@ -590,7 +569,7 @@ python amd_cpu_stress_test.py -c 0 4 -t 100 -d 300 -o inter_ccx.txt
 # Compare results for CCX impact analysis
 ```
 
-### 2. Precision Boost Optimization
+### 8. Precision Boost Optimization
 ```bash
 #!/bin/bash
 # Analyze Precision Boost behavior under different conditions
@@ -604,13 +583,13 @@ python amd_cpu_stress_test.py -t 100 -d 300 -o all_core_boost.txt
 # Varying core count for boost scaling analysis
 ```
 
-### 3. Memory Controller Stress Test
+### 9. Memory Controller Stress Test
 ```bash
 # High-load test focusing on memory controller
 python amd_cpu_stress_test.py -d 900 -t 100 -o memory_controller.txt
 ```
 
-## Compatibility Notes
+## Compatibility
 
 ### 1. Processor Families
 - Ryzen 1000-7000 series supported
