@@ -4,6 +4,7 @@
 
 - nvidia_gpu_stress_test.py contains four GPU stress test modes: Matrix Mode, Simple Mode, Ray Tracing Mode, and Frequency Max Mode. Each mode is designed to stress different aspects of GPU performance and capabilities. In general, these modes provide comprehensive testing capabilities for various aspects of GPU performance. By selecting the appropriate mode based on the specific capabilities you wish to test, you can gain valuable insights into your GPU's performance characteristics. Whether you're interested in computational throughput, rendering performance, or thermal management, these modes provide targeted testing to meet your needs.
 - intel_cpu_stress_test.py is a Python-based utility designed for stress testing Intel CPUs. It provides precise control over CPU utilization, supports multi-core testing, and offers detailed performance monitoring capabilities.
+- amd_cpu_stress_test.py is adapted from the Intel CPU stress testing framework, with specific optimizations for AMD CPU architectures. You can use it on AMD CPUs just like how you use intel_cpu_stress_test.py on Intel CPUs.
 
 # Multi-mode Nvidia GPU Stress Test
 
@@ -462,3 +463,161 @@ python intel_cpu_stress_test.py -c 0 -t 100 -o single_core.txt
 # Dual-core balanced test
 python intel_cpu_stress_test.py -c 0 1 -t 50 -d 300 -o dual_core.txt
 ```
+
+# AMD CPU Stress Test
+
+## AMD-Specific Features and Adaptations
+
+### 1. Architectural Differences
+- **SMT vs Hyperthreading**: AMD uses Simultaneous Multi-Threading (SMT) instead of Intel's Hyperthreading
+- **CCX (Core Complex)**: AMD CPUs use CCX architecture, which affects core grouping and cache sharing
+- **Precision Boost**: AMD's equivalent to Intel's Turbo Boost, with different behavior patterns
+- **Core Layout**: Different physical to logical core mapping compared to Intel
+
+### 2. Implementation Adaptations
+
+#### Core Topology Handling
+```python
+def get_cpu_topology():
+    """
+    Get CPU topology information including physical and logical cores
+    For AMD CPUs, this includes CCX (Core Complex) information if available
+    """
+    physical_cores = psutil.cpu_count(logical=False)
+    logical_cores = psutil.cpu_count(logical=True)
+    return physical_cores, logical_cores
+```
+
+#### SMT Control
+```python
+if disable_smt:
+    # Use only physical cores when SMT is disabled
+    available_cores = list(range(physical_cores))
+else:
+    # Use all logical cores when SMT is enabled
+    available_cores = list(range(logical_cores))
+```
+
+## AMD-Specific Test Scenarios
+
+### 1. CCX-Aware Testing
+```bash
+# Test cores within same CCX
+python amd_cpu_stress_test.py -c 0 1 2 3 -t 100
+
+# Test cross-CCX performance
+python amd_cpu_stress_test.py -c 0 4 -t 100
+```
+
+### 2. Precision Boost Analysis
+```bash
+# Single-core boost behavior
+python amd_cpu_stress_test.py -c 0 -t 100 -d 300
+
+# Multi-core boost scaling
+for cores in {1..8}; do
+    python amd_cpu_stress_test.py -c $(seq -s ' ' 0 $((cores-1))) -t 100 -d 300
+done
+```
+
+### 3. SMT Performance Testing
+```bash
+# Test with SMT enabled
+python amd_cpu_stress_test.py -t 100 -d 300
+
+# Test with SMT disabled
+python amd_cpu_stress_test.py --disable-smt -t 100 -d 300
+```
+
+## AMD-Specific Considerations
+
+### 1. CCX Architecture
+- Cores within same CCX share L3 cache
+- Cross-CCX communication has different latency characteristics
+- Consider CCX boundaries when selecting cores for testing
+
+### 2. Precision Boost Behavior
+- Different boost algorithm compared to Intel
+- Temperature and power limits affect boost behavior differently
+- Consider monitoring tools like `ryzen_monitor` for detailed boost analysis
+
+### 3. Power Management
+- Different power states compared to Intel
+- Package power tracking differs from Intel's implementation
+- Consider using `ryzen_smu` for detailed power monitoring
+
+## Best Practices for AMD Testing
+
+### 1. CCX-Aware Core Selection
+```bash
+# For Ryzen CPUs with 2 CCXs (example)
+# Test first CCX
+python amd_cpu_stress_test.py -c 0 1 2 3 -o ccx1_test.txt
+
+# Test second CCX
+python amd_cpu_stress_test.py -c 4 5 6 7 -o ccx2_test.txt
+
+# Cross-CCX test
+python amd_cpu_stress_test.py -c 0 4 -o cross_ccx_test.txt
+```
+
+### 2. Thermal Considerations
+- AMD CPUs often have different thermal characteristics
+- Consider chiplet design in newer AMD processors
+- Monitor per-CCX temperatures when available
+
+### 3. Performance Monitoring
+```bash
+# Gradual load increase for boost behavior analysis
+for load in 30 50 70 90 100; do
+    python amd_cpu_stress_test.py -d 300 -t $load -o boost_${load}.txt
+done
+```
+
+## Advanced Test Examples
+
+### 1. CCX Performance Analysis
+```bash
+#!/bin/bash
+# Test inter-CCX and intra-CCX performance
+
+# Intra-CCX test (cores in same CCX)
+python amd_cpu_stress_test.py -c 0 1 -t 100 -d 300 -o intra_ccx.txt
+
+# Inter-CCX test (cores in different CCXs)
+python amd_cpu_stress_test.py -c 0 4 -t 100 -d 300 -o inter_ccx.txt
+
+# Compare results for CCX impact analysis
+```
+
+### 2. Precision Boost Optimization
+```bash
+#!/bin/bash
+# Analyze Precision Boost behavior under different conditions
+
+# Single-core boost
+python amd_cpu_stress_test.py -c 0 -t 100 -d 300 -o single_boost.txt
+
+# All-core boost
+python amd_cpu_stress_test.py -t 100 -d 300 -o all_core_boost.txt
+
+# Varying core count for boost scaling analysis
+```
+
+### 3. Memory Controller Stress Test
+```bash
+# High-load test focusing on memory controller
+python amd_cpu_stress_test.py -d 900 -t 100 -o memory_controller.txt
+```
+
+## Compatibility Notes
+
+### 1. Processor Families
+- Ryzen 1000-7000 series supported
+- Threadripper requires additional core mapping consideration
+- EPYC servers may need different core selection strategies
+
+### 2. Operating Systems
+- Linux: Full support with AMD monitoring tools
+- Windows: Basic functionality with limited low-level access
+- Consider OS-specific thread scheduling differences
