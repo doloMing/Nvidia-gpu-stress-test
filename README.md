@@ -588,15 +588,3 @@ python amd_cpu_stress_test.py -t 100 -d 300 -o all_core_boost.txt
 # High-load test focusing on memory controller
 python amd_cpu_stress_test.py -d 900 -t 100 -o memory_controller.txt
 ```
-
-## Compatibility
-
-### 1. Processor Families
-- Ryzen 1000-7000 series supported
-- Threadripper requires additional core mapping consideration
-- EPYC servers may need different core selection strategies
-
-### 2. Operating Systems
-- Linux: Full support with AMD monitoring tools
-- Windows: Basic functionality with limited low-level access
-- Consider OS-specific thread scheduling differences
